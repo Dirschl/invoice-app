@@ -26,9 +26,20 @@ export async function POST(request: Request) {
     );
   }
 
-  if (file.type && file.type !== "application/pdf") {
+  const nameOk = file.name.toLowerCase().endsWith(".pdf");
+  const typeOk =
+    !file.type ||
+    file.type === "application/pdf" ||
+    file.type === "application/x-pdf";
+  if (!typeOk && !nameOk) {
     return NextResponse.json(
       { error: "Nur PDF-Dateien sind erlaubt." },
+      { status: 400 }
+    );
+  }
+  if (!nameOk) {
+    return NextResponse.json(
+      { error: "Dateiname muss auf .pdf enden." },
       { status: 400 }
     );
   }
